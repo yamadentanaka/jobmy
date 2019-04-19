@@ -22,3 +22,12 @@ def insert_job(title, remarks, command, schedule):
     except Exception as ex:
         logging.error(traceback.format_exc())
     return result
+
+def get_job_by_id(job_id):
+    query = "select * from JOBS where ID = %s"
+    try:
+        job = mysql_utils.fetch_one(query, [job_id])
+        return job
+    except Exception as ex:
+        logging.error(traceback.format_exc())
+    return None

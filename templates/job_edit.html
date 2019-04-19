@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 {% block title %}ジョブ編集{% end %}
+{% block head %}
+<script type="text/javascript" src="{{ static_url("js/jobmy.js") }}"></script>
+{% end %}
 {% block header %}ジョブ編集{% end %}
 {% block content %}
-{% if id is not None %}
-<input type="hidden" id="job_id" name="job_id" value="{{ id }}" />
+{% if locals().get("job_id", False) %}
+<input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
 {% end %}
-ジョブタイトル: <br><input type="text" id="title" name="title" /><br>
-備考：<br><textarea id="remarks" name="remarks"></textarea><br>
-コマンド：<br><textarea id="command" name="command"></textarea><br>
-スケジュール：<br><input type="text" id="schedule" name="schedule" /><br>
-<input type="button" value="登録" />
+ジョブタイトル: <br><input type="text" id="title" name="title" value="{{ escape(title) if title is not None else '' }}" /><br>
+備考：<br><textarea id="remarks" name="remarks" value="{{ escape(remarks) if remarks is not None else '' }}"></textarea><br>
+コマンド：<br><textarea id="command" name="command" value="{{ command if command is not None else '' }}"></textarea><br>
+スケジュール：<br><input type="text" id="schedule" name="schedule" value="{{ escape(schedule) if schedule is not None else '' }}" /><br>
+<input type="button" value="登録" onClick="jobmy.putJob();" />
+<span id="msg" name="msg"></span>
 {% end %}

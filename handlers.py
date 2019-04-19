@@ -1,8 +1,18 @@
 import tornado.web
 import logging
 import traceback
+import json
 
 import jobmy_tables
+
+def is_empty(value):
+    if value is None:
+        return True
+    elif len(value) <= 0:
+        return True
+    else:
+        return False
+
 
 class HealthCheckHandler(tornado.web.RequestHandler):
     def get(self):
@@ -24,23 +34,49 @@ class JobEditHandler(tornado.web.RequestHandler):
 
     def get(self):
         logging.debug("job edit handler start.")
-        self.render("job_edit.html")
+        job_id = self.get_argument("job_id", None)
+        if job_id:
+            job = jobmy_tables.get_job_by_id(job_id)
+            self.render("job_edit.html",
+                title=job["TITLE"],
+                remarks=job["REMARKS"],
+                command=job["COMMAND"],
+                schedule=job["SCHEDULE"]
+            )
+        else:
+            self.render("job_edit.html",
+                title=None,
+                remarks=None,
+                command=None,
+                schedule=None
+            )
         logging.debug("job edit handler end.")
 
     def post(self):
         logging.debug("job edit handler start.")
+        self.set_header('Content-Type', 'application/json;charset=UTF-8')
+        job_id = self.get_argument("job_id", None)
         title = self.get_argument("title", None)
         remarks = self.get_argument("remarks", None)
         command = self.get_argument("command", None)
         schedule = self.get_argument("schedule", None)
-        if title is not None and remarks is not None and command is not None and schedule is not None:
+        msg = "ok"
+        out = {
+            "msg": msg,
+            "title": title,
+            "remarks": remarks,
+            "command": command,
+            "schedule": schedule
+        }
+        if not is_empty(title) and not is_empty(remarks) and not is_empty(command) and not is_empty(schedule):
             ret = jobmy_tables.insert_job(title, remarks, command, schedule)
             if ret:
-                msg = "OK"
+                out["result"] = 0
             else:
-                msg = "登録に失敗しました。"
-            self.render("job_edit.html", msg=msg)
+                out["result"] = 1
+                out["msg"] = "登録に失敗しました。"
         else:
-            msg = "全ての項目を入力するしてください。"
-            self.render("job_edit.html", msg=msg)
+            out["result"] = 1
+            out["msg"] = "全ての項目を入力するしてください。"
+        self.write(json.dumps(out))
         logging.debug("job edit handler end.")
