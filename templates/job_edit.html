@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}ジョブ編集{% end %}
+{% block header %}ジョブ編集{% end %}
+{% block content %}
+{% if id is not None %}
+<input type="hidden" id="job_id" name="job_id" value="{{ id }}" />
+{% end %}
+ジョブタイトル: <br><input type="text" id="title" name="title" /><br>
+備考：<br><textarea id="remarks" name="remarks"></textarea><br>
+コマンド：<br><textarea id="command" name="command"></textarea><br>
+スケジュール：<br><input type="text" id="schedule" name="schedule" /><br>
+<input type="button" value="登録" />
+{% end %}

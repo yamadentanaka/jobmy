@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}ジョブ一覧{% end %}
+{% block header %}ジョブ一覧{% end %}
+{% block content %}
+<a href="/job_edit">ジョブ登録</a><br>
+  {% for job in jobs %}
+{{ job["ID"] }} - {{ job["TITLE"] }}
+  {% end %}
+{% end %}
