@@ -4,15 +4,7 @@ import traceback
 import json
 
 import jobmy_tables
-
-def is_empty(value):
-    if value is None:
-        return True
-    elif len(value) <= 0:
-        return True
-    else:
-        return False
-
+from lib.string_utils import is_empty
 
 class HealthCheckHandler(tornado.web.RequestHandler):
     def get(self):
@@ -74,9 +66,9 @@ class JobEditHandler(tornado.web.RequestHandler):
                 out["result"] = 0
             else:
                 out["result"] = 1
-                out["msg"] = "登録に失敗しました。"
+                out["msg"] = "failed."
         else:
             out["result"] = 1
-            out["msg"] = "全ての項目を入力するしてください。"
+            out["msg"] = "Please input all params."
         self.write(json.dumps(out))
         logging.debug("job edit handler end.")

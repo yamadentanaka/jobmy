@@ -6,6 +6,8 @@ import tornado.web
 import tornado.httpserver
 import tornado.ioloop
 import logging
+
+import settings as jobmy_settings
 from handlers import *
 
 logging.basicConfig(
@@ -21,6 +23,9 @@ def start_job_watcher():
 
 if __name__ == "__main__":
     logging.debug("start jobmy server.")
+    if not os.path.exists(jobmy_settings.WORK_DIR):
+        os.makedirs(jobmy_settings.WORK_DIR)
+        logging.debug("create work directory.")
     settings = { 
         "template_path": os.path.join(os.getcwd(),  "templates"),
         "static_path": os.path.join(os.getcwd(),  "static"),

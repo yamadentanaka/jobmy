@@ -8,18 +8,33 @@
     <title>{% block title %}{% end %}</title>
     <!-- <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="{{ static_url("css/style.css") }}">
     {% block head %}{% end %}
   </head>
   <body>
     <section class="header">
+      <div class="cp_navi">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li>
+            <a href="#">Job <span class="caret"></span></a>
+            <div>
+              <ul>
+                <li><a href="/job_edit">Job Entry</a></li>
+              </ul>
+            </div>
+          </li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Help</a></li>
+        </ul>
+      </div>
       {% block header %}{% end %}
     </section>
     <section class="content">
       {% block content %}{% end %}
     </section>
-    <div class="footer">
+    <section class="footer">
       {% block footer %}{% end %}
-      (c) 2019 yamadentanaka.com
     </section>
   </body>
 </html>

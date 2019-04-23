@@ -1,9 +1,19 @@
 {% extends "base.html" %}
-{% block title %}ジョブ一覧{% end %}
-{% block header %}ジョブ一覧{% end %}
+{% block title %}Job List{% end %}
+{% block header %}Job List{% end %}
 {% block content %}
-<a href="/job_edit">ジョブ登録</a><br>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Execute</th>
+  </tr>
   {% for job in jobs %}
-{{ job["ID"] }} - {{ job["TITLE"] }}
+  <tr>
+    <td>{{ job["ID"] }}</td>
+    <td>{{ job["TITLE"] }}</td>
+    <td><a href="#" class="cp_btn">Execute</a></td>
+  </tr>
   {% end %}
+</table>
 {% end %}
