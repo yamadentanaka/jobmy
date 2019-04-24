@@ -6,3 +6,10 @@ def is_empty(value):
         return True
     else:
         return False
+
+def is_int(value):
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False

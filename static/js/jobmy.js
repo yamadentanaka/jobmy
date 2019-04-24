@@ -32,3 +32,29 @@ jobmy.putJob = function() {
     }
   });
 }
+
+jobmy.executeJob = function(jobId) {
+  let data = {
+    "job_id": jobId
+  };
+  console.log(data);
+  $.ajax({
+    type: "POST",
+    url: "/job_execute",
+    data: data,
+    xhrFields: {
+      withCredentials: true
+    },
+    success: function(result, textStatus) {
+        let ret = eval(result);
+        window.alert(ret["msg"]);
+    },
+    error: function(xhr, textStatus, errorThrown) {
+      console.log(xhr);
+      window.alert("error happend.");
+    },
+    complete: function() {
+      console.log("finish jobmy.putJob");
+    }
+  });
+}

@@ -19,6 +19,8 @@ def start_job_watcher():
     period = 3 
     ioloop = tornado.ioloop.IOLoop.current()
     ioloop.add_timeout(time.time() + period, start_job_watcher)
+    # kill the long time jobs
+    # kick scheduled jobs
     logging.debug("start_job_watcher")
 
 if __name__ == "__main__":
@@ -35,6 +37,7 @@ if __name__ == "__main__":
             (r'/', TopHandler, dict()),
             (r'/healthcheck', HealthCheckHandler, dict()),
             (r'/job_edit', JobEditHandler, dict()),
+            (r'/job_execute', ExecuteJobHandler, dict()),
         ],  
         **settings
     )   

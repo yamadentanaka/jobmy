@@ -4,26 +4,32 @@ import traceback
 import json
 
 import jobmy_tables
-from lib.string_utils import is_empty
+import job
+from lib.string_utils import is_empty, is_int
+
+class BaseJsonApiHandler(tornado.web.RequestHandler):
+    def post(self):
+        logging.debug("base json api handler start.")
+        self.set_header('Content-Type', 'application/json;charset=UTF-8')
+        out = self.make_json_dict()
+        self.write(json.dumps(out))
+        logging.debug("base json api handler end.")
+
+    def make_json_dict(self):
+        return {}
 
 class HealthCheckHandler(tornado.web.RequestHandler):
     def get(self):
         self.write("OK")
 
 class TopHandler(tornado.web.RequestHandler):
-    def initialize(self):
-        pass
-
     def get(self):
         logging.debug("top handler start.")
         jobs = jobmy_tables.get_all_jobs()
         self.render("index.html", jobs=jobs)
         logging.debug("top handler end.")
 
-class JobEditHandler(tornado.web.RequestHandler):
-    def initialize(self):
-        pass
-
+class JobEditHandler(BaseJsonApiHandler):
     def get(self):
         logging.debug("job edit handler start.")
         job_id = self.get_argument("job_id", None)
@@ -44,9 +50,8 @@ class JobEditHandler(tornado.web.RequestHandler):
             )
         logging.debug("job edit handler end.")
 
-    def post(self):
+    def make_json_dict(self):
         logging.debug("job edit handler start.")
-        self.set_header('Content-Type', 'application/json;charset=UTF-8')
         job_id = self.get_argument("job_id", None)
         title = self.get_argument("title", None)
         remarks = self.get_argument("remarks", None)
@@ -70,5 +75,18 @@ class JobEditHandler(tornado.web.RequestHandler):
         else:
             out["result"] = 1
             out["msg"] = "Please input all params."
-        self.write(json.dumps(out))
         logging.debug("job edit handler end.")
+        return out
+
+class ExecuteJobHandler(BaseJsonApiHandler):
+    def make_json_dict(self):
+        logging.debug("execute job handler start.")
+        job_id = self.get_argument("job_id", None)
+        if is_int(job_id):
+            job.kick_job(int(job_id))
+            out = {"result": 0, "msg": "ok"}
+        else:
+            logging.warning("job_id is invalid. {}".format(job_id))
+            out = {"result": 1, "msg": "failed to job execute."}
+        logging.debug("execute job handler end.")
+        return out

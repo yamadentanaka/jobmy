@@ -46,11 +46,13 @@ def update_job_last_exec(job_id, state, last_exec_result, last_exec_datetime):
 # JOB_HISTORY table functions
 def insert_job_history(value_dict):
     result = False
-    query = "insert into JOB_HISTORY (JOB_ID, JOB_KEY, EXEC_RESULT, STD_OUT, STD_ERR, START_DATETIME, END_DATETIME) values (%s, %s, %s, %s, %s, %s, %s)"
+    query = "insert into JOB_HISTORY (JOB_ID, JOB_KEY, HOST, PID, EXEC_RESULT, STD_OUT, STD_ERR, START_DATETIME, END_DATETIME) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
     try:
         mysql_utils.execute_query(query, [
             value_dict["JOB_ID"],
             value_dict["JOB_KEY"],
+            value_dict["HOST"],
+            value_dict["PID"],
             value_dict["EXEC_RESULT"] if "EXEC_RESULT" in value_dict else None,
             value_dict["STD_OUT"] if "STD_OUT" in value_dict else None,
             value_dict["STD_ERR"] if "STD_ERR" in value_dict else None,
