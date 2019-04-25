@@ -9,6 +9,7 @@ import logging
 
 import settings as jobmy_settings
 from handlers import *
+import job
 
 logging.basicConfig(
     stream=sys.stdout,
@@ -20,6 +21,7 @@ def start_job_watcher():
     ioloop = tornado.ioloop.IOLoop.current()
     ioloop.add_timeout(time.time() + period, start_job_watcher)
     # kill the long time jobs
+    job.kill_jobs()
     # kick scheduled jobs
     logging.debug("start_job_watcher")
 

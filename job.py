@@ -72,3 +72,7 @@ def execute_job(job_id, caller_job_key=None):
     except Exception as ex:
         logging.error(traceback.format_exc())
     logging.info("end job: {}, key: {}".format(job_id, key))
+
+def kill_jobs():
+    targets = jobmy_tables.get_kill_target_jobs()
+    logging.info("kill target jobs: {}".format(len(targets)))
