@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Job History Detail{% end %}
+{% block content %}
+Job History ID: {{ job["ID"] }}<br>
+Job ID: {{ job["JOB_ID"] }}<br>
+Job Key: {{ escape(job["JOB_KEY"]) }}<br>
+Job Title: {{ escape(job["TITLE"]) }}<br>
+Job Remarks: {{ escape(job["REMARKS"]) }}<br>
+Job Command: <pre>{{ job["COMMAND"] }}</pre><br>
+Job Schedule: {{ escape(job["SCHEDULE"]) }}<br>
+Job Max Execution Time: {{ job["MAX_EXEC_TIME"] }}<br>
+Next Job IDs: {{ escape(job["NEXT_JOB_IDS"]) }}<br>
+Caller Job Key: {{ job["CALLER_JOB_KEY"] }}<br>
+Host: {{ escape(job["HOST"]) }}<br>
+Process ID: {{ job["PID"] }}<br>
+Job Result: {{ escape(job["EXEC_RESULT"]) }}<br>
+STD_OUT: <pre>{{ job["STD_OUT"] }}</pre><br>
+STD_ERR: <pre>{{ job["STD_ERR"] }}</pre><br>
+Start Date Time: {{ job["START_DATETIME"] }}<br>
+End Date Time: {{ job["END_DATETIME"] }}
+{% end %}

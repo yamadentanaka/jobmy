@@ -8,9 +8,8 @@ create table if not exists JOBS (
   , REMARKS varchar(2000)
   , COMMAND text
   , SCHEDULE varchar(200)
-  , STATE boolean default false
-  , LAST_EXEC_RESULT varchar(50)
-  , LAST_EXEC_DATETIME datetime
+  , MAX_EXEC_TIME int
+  , NEXT_JOB_IDS varchar(500)
   , IS_DELETED boolean default false
   , CREATE_DATETIME timestamp not null default current_timestamp
   , UPDATE_DATETIME timestamp not null default current_timestamp on update current_timestamp
@@ -21,9 +20,10 @@ create table if not exists JOB_HISTORY (
   ID int auto_increment
   , JOB_ID int not null
   , JOB_KEY varchar(72)
+  , CALLER_JOB_KEY varchar(72)
   , HOST varchar(50)
   , PID int
-  , EXEC_RESULT varchar(50)
+  , EXEC_RESULT varchar(50) -- running, succesed, failed, killed
   , STD_OUT longtext
   , STD_ERR longtext
   , START_DATETIME datetime
@@ -34,5 +34,6 @@ create table if not exists JOB_HISTORY (
 ) engine=InnoDB;
 alter table JOB_HISTORY add index I_ID_JOB_ID(ID, JOB_ID);
 alter table JOB_HISTORY add index I_ID_JOB_KEY(ID, JOB_KEY);
+alter table JOB_HISTORY add index I_ID_EXEC_RESULT(ID, EXEC_RESULT);
 alter table JOB_HISTORY engine=InnoDB ROW_FORMAT=compressed KEY_BLOCK_SIZE=8;
 alter table JOB_HISTORY partition by hash(JOB_ID) partitions 8;

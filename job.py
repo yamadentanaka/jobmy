@@ -1,4 +1,5 @@
 import os
+import shutil
 import socket
 import logging
 import subprocess
@@ -6,22 +7,23 @@ import time
 from datetime import datetime
 from pathlib import Path
 import tornado.ioloop
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 import jobmy_tables
 import settings
 import uuid
 
-def kick_job(job_id):
-    with ThreadPoolExecutor(max_workers=1) as executor:
-        executor.submit(execute_job, job_id)
+def kick_job(job_id, caller_job_key=None):
+    executor = ThreadPoolExecutor(max_workers=1)
+    executor.submit(lambda x,y:execute_job(x, caller_job_key=y), job_id, caller_job_key)
 
-def execute_job(job_id):
+def execute_job(job_id, caller_job_key=None):
+    key = str(uuid.uuid4())
+    logging.info("start job: {}, key: {}".format(job_id, key))
     try:
         # get job info
         job = jobmy_tables.get_job_by_id(job_id)
         # create work directory
-        key = str(uuid.uuid4())
         tmp_dir = os.path.join(settings.WORK_DIR, key)
         os.makedirs(tmp_dir)
         # create exec shell script
@@ -36,8 +38,10 @@ def execute_job(job_id):
         value_dict = {}
         value_dict["JOB_ID"] = job_id
         value_dict["JOB_KEY"] = key
+        if caller_job_key:
+            value_dict["CALLER_JOB_KEY"] = caller_job_key
         value_dict["HOST"] = socket.gethostname()
-        value_dict["EXEC_RESULT"] = "processing"
+        value_dict["EXEC_RESULT"] = "running"
         value_dict["START_DATETIME"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         # execute job
         cmd = "{}".format(os.path.abspath(shell_file))
@@ -56,5 +60,15 @@ def execute_job(job_id):
         ret = jobmy_tables.update_job_history(value_dict)
         if not ret:
             logging.warning("JOB KEY {} is failed to update record.".format(key))
+        # when job successed, tmp directory remove
+        if result.returncode == 0:
+            logging.info("remove dir {}".format(tmp_dir))
+            shutil.rmtree(tmp_dir)
+            # when next_job_ids is exists, kick its jobs.
+            if job["NEXT_JOB_IDS"] is not None:
+                ids = job["NEXT_JOB_IDS"].split(",")
+                for next_job_id in ids:
+                    kick_job(int(next_job_id), caller_job_key=key)
     except Exception as ex:
         logging.error(traceback.format_exc())
+    logging.info("end job: {}, key: {}".format(job_id, key))

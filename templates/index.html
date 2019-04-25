@@ -1,18 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Job List{% end %}
-{% block header %}Job List{% end %}
+{% block title %}Top{% end %}
+{% block header %}Latest 10 Histories{% end %}
 {% block content %}
 <table>
   <tr>
-    <th>ID</th>
+    <th>History ID</th>
+    <th>Job ID</th>
     <th>Name</th>
+    <th>Result</th>
+    <th>Start Date Time</th>
+    <th>End Date Time</th>
     <th>Execute</th>
   </tr>
   {% for job in jobs %}
   <tr>
-    <td>{{ job["ID"] }}</td>
-    <td>{{ job["TITLE"] }}</td>
-    <td><a href="#" class="cp_btn" onClick="jobmy.executeJob({{ job['ID'] }});">Execute</a></td>
+    <td><a href="/job_history_detail?job_id={{ job["ID"] }}">{{ job["ID"] }}</a></td>
+    <td>{{ job["JOB_ID"] }}</td>
+    <td>{{ escape(job["TITLE"]) }}</td>
+    <td>{{ escape(job["EXEC_RESULT"]) }}</td>
+    <td>{{ job["START_DATETIME"] }}</td>
+    <td>{{ job["END_DATETIME"] }} </td>
+    <td><a href="#" class="cp_btn" onClick="jobmy.executeJob({{ job['JOB_ID'] }});">Execute Same Job</a></td>
   </tr>
   {% end %}
 </table>

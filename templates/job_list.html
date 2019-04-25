@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Job List{% end %}
+{% block content %}
+<table>
+  <tr>
+    <th>Job ID</th>
+    <th>Name</th>
+    <th>Schedule</th>
+    <th>Max Exec Time(minute)</th>
+    <th>Next Job IDs</th>
+    <th>Execute</th>
+  </tr>
+  {% for job in jobs %}
+  <tr>
+    <td><a href="/job_edit?job_id={{ job["ID"] }}">{{ job["ID"] }}</a></td>
+    <td>{{ escape(job["TITLE"]) }}</td>
+    <td>{{ escape(job["SCHEDULE"]) }}</td>
+    <td>{{ job["MAX_EXEC_TIME"] }}</td>
+    <td>{{ escape(job["NEXT_JOB_IDS"]) }} </td>
+    <td><a href="#" class="cp_btn" onClick="jobmy.executeJob({{ job['ID'] }});">Execute</a></td>
+  </tr>
+  {% end %}
+</table>
+{% end %}

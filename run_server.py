@@ -13,7 +13,7 @@ from handlers import *
 logging.basicConfig(
     stream=sys.stdout,
     level=logging.DEBUG,
-    format="[%(asctime)s] [%(levelname)s] [%(filename)s] [Line : %(lineno)d] [module : %(module)s] [PID : %(process)d] %(message)s")
+    format="%(asctime)s %(levelname)s [%(filename)s(Line:%(lineno)d) [PID:%(process)d] [ThreadID:%(thread)d] %(message)s")
 
 def start_job_watcher():
     period = 3 
@@ -38,6 +38,8 @@ if __name__ == "__main__":
             (r'/healthcheck', HealthCheckHandler, dict()),
             (r'/job_edit', JobEditHandler, dict()),
             (r'/job_execute', ExecuteJobHandler, dict()),
+            (r'/job_list', JobListHandler, dict()),
+            (r'/job_history_detail', JobHistoryDetailHandler, dict()),
         ],  
         **settings
     )   
