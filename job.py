@@ -1,6 +1,7 @@
 import os
 import shutil
 import socket
+import uuid
 import logging
 import subprocess
 import time
@@ -11,7 +12,14 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 import jobmy_tables
 import settings
-import uuid
+from lib import string_utils, cron_utils
+
+def schedule_analysis(value, last_exec_time):
+    if value.lower() == "immediate":
+        return True
+    checker = cron_utils.ExecutableChecker(value, last_exec_time)
+    result = checker.is_executable()
+    return result
 
 def kick_job(job_id, caller_job_key=None):
     executor = ThreadPoolExecutor(max_workers=1)
