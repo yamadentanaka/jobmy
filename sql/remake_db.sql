@@ -10,6 +10,7 @@ create table if not exists JOBS (
   , SCHEDULE varchar(200)
   , MAX_EXEC_TIME int
   , NEXT_JOB_IDS varchar(500)
+  , HOST varchar(100)
   , IS_DELETED boolean default false
   , CREATE_DATETIME timestamp not null default current_timestamp
   , UPDATE_DATETIME timestamp not null default current_timestamp on update current_timestamp
@@ -21,7 +22,8 @@ create table if not exists JOB_HISTORY (
   , JOB_ID int not null
   , JOB_KEY varchar(72)
   , CALLER_JOB_KEY varchar(72)
-  , HOST varchar(50)
+  , HOST varchar(100)
+  , IP_ADDRESS varchar(20)
   , PID int
   , EXEC_RESULT varchar(50) -- running, succesed, failed, killed
   , STD_OUT longtext

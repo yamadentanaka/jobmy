@@ -40,7 +40,10 @@ def execute_job(job_id, caller_job_key=None):
         value_dict["JOB_KEY"] = key
         if caller_job_key:
             value_dict["CALLER_JOB_KEY"] = caller_job_key
-        value_dict["HOST"] = socket.gethostname()
+        value_dict["HOST"] = settings.HOST_NAME
+        host_name = socket.gethostname()
+        ip = socket.gethostbyname(host_name)
+        value_dict["IP_ADDRESS"] = ip
         value_dict["EXEC_RESULT"] = "running"
         value_dict["START_DATETIME"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         # execute job

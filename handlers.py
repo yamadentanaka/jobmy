@@ -6,6 +6,7 @@ import json
 import jobmy_tables
 import job
 from lib.string_utils import is_empty, is_int
+import settings
 
 class BaseJsonApiHandler(tornado.web.RequestHandler):
     def post(self):
@@ -100,7 +101,7 @@ class JobEditHandler(BaseJsonApiHandler):
                 ret = jobmy_tables.update_job(job_id, title, remarks, command, schedule, max_exec_time, next_job_ids)
             else:
                 logging.debug("insert job.")
-                ret = jobmy_tables.insert_job(title, remarks, command, schedule, max_exec_time, next_job_ids)
+                ret = jobmy_tables.insert_job(title, remarks, command, schedule, max_exec_time, next_job_ids, settings.HOST_NAME)
             if ret:
                 out["result"] = 0
             else:
