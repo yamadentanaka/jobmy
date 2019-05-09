@@ -16,12 +16,13 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s [%(filename)s(Line:%(lineno)d) [PID:%(process)d] [ThreadID:%(thread)d] %(message)s")
 
 def start_job_watcher():
-    period = 3 
+    period = jobmy_settings.JOB_CHECK_PERIOD 
     ioloop = tornado.ioloop.IOLoop.current()
     ioloop.add_timeout(time.time() + period, start_job_watcher)
     # kill the long time jobs
     job.kill_jobs()
     # kick scheduled jobs
+    job.kick_schedule_jobs()
     logging.debug("start_job_watcher")
 
 if __name__ == "__main__":

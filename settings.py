@@ -11,3 +11,5 @@ MYSQL_CHARSET = "utf8"
 WORK_DIR = "./tmp_jobmy"
 
 HOST_NAME = os.environ.get("JOBMY_HOST_NAME", socket.gethostname())
+
+JOB_CHECK_PERIOD = 3

@@ -98,7 +98,7 @@ class JobEditHandler(BaseJsonApiHandler):
             not is_empty(max_exec_time):
             if job_id:
                 logging.debug("update job. ID: {}".format(job_id))
-                ret = jobmy_tables.update_job(job_id, title, remarks, command, schedule, max_exec_time, next_job_ids)
+                ret = jobmy_tables.update_job(job_id, title, remarks, command, schedule, max_exec_time, next_job_ids, settings.HOST_NAME)
             else:
                 logging.debug("insert job.")
                 ret = jobmy_tables.insert_job(title, remarks, command, schedule, max_exec_time, next_job_ids, settings.HOST_NAME)

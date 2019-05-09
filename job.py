@@ -12,14 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 import jobmy_tables
 import settings
-from lib import string_utils, cron_utils
-
-def schedule_analysis(value, last_exec_time):
-    if value.lower() == "immediate":
-        return True
-    checker = cron_utils.ExecutableChecker(value, last_exec_time)
-    result = checker.is_executable()
-    return result
+from lib import cron_utils
 
 def kick_job(job_id, caller_job_key=None):
     executor = ThreadPoolExecutor(max_workers=1)
@@ -86,4 +79,13 @@ def execute_job(job_id, caller_job_key=None):
 
 def kill_jobs():
     targets = jobmy_tables.get_kill_target_jobs()
-    logging.info("kill target jobs: {}".format(len(targets)))
+    if len(targets) > 0:
+        logging.info("kill target jobs: {}".format(len(targets)))
+
+def kick_schedule_jobs():
+    jobs = jobmy_tables.get_all_jobs()
+    for j in jobs:
+        if j["SCHEDULE"].lower() != "immediate":
+            if cron_utils.is_executable(j["SCHEDULE"]):
+                logging.info("now kick job: {} {}".format(j["ID"], j["TITLE"]))
+                kick_job(j["ID"])
