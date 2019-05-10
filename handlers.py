@@ -125,3 +125,12 @@ class ExecuteJobHandler(BaseJsonApiHandler):
             out = {"result": 1, "msg": "failed to job execute."}
         logging.debug("execute job handler end.")
         return out
+
+class KillJobHandler(BaseJsonApiHandler):
+    def make_json_dict(self):
+        logging.debug("kill job handler start.")
+        job_key = self.get_argument("job_key", None)
+        job.kill_job(job_key)
+        out = {"result": 0, "msg": "ok"}
+        logging.debug("execute kill handler end.")
+        return out

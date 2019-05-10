@@ -27,18 +27,18 @@ def insert_job(title, remarks, command, schedule, max_exec_time, next_job_ids, h
 
 def update_job(job_id, title, remarks, command, schedule, max_exec_time, next_job_ids, host_name):
     result = False
-    query = "update JOBS set TITLE = %s, REMARKS = %s, COMMAND = %s, SCHEDULE = %s, MAX_EXEC_TIME = %s, NEXT_JOB_IDS = %s, HOST = %s where ID = %s"
+    query = "update JOBS set TITLE = %s, REMARKS = %s, COMMAND = %s, SCHEDULE = %s, MAX_EXEC_TIME = %s, NEXT_JOB_IDS = %s, HOST = %s where ID = %s and HOST = %s"
     try:
-        mysql_utils.execute_query(query, [title, remarks, command, schedule, max_exec_time, next_job_ids, host_name, job_id])
+        mysql_utils.execute_query(query, [title, remarks, command, schedule, max_exec_time, next_job_ids, host_name, job_id, settings.HOST_NAME])
         result = True
     except Exception as ex:
         logging.error(traceback.format_exc())
     return result
 
 def get_job_by_id(job_id):
-    query = "select * from JOBS where ID = %s"
+    query = "select * from JOBS where ID = %s and HOST = %s"
     try:
-        job = mysql_utils.fetch_one(query, [job_id])
+        job = mysql_utils.fetch_one(query, [job_id, settings.HOST_NAME])
         return job
     except Exception as ex:
         logging.error(traceback.format_exc())
@@ -69,9 +69,10 @@ def insert_job_history(value_dict):
 
 def update_job_history(value_dict):
     result = False
-    query = "update JOB_HISTORY set EXEC_RESULT = %s, STD_OUT = %s, STD_ERR = %s, END_DATETIME = %s where JOB_KEY = %s"
+    query = "update JOB_HISTORY set RETURN_CODE = %s, EXEC_RESULT = %s, STD_OUT = %s, STD_ERR = %s, END_DATETIME = %s where JOB_KEY = %s"
     try:
         mysql_utils.execute_query(query, [
+            value_dict["RETURN_CODE"],
             value_dict["EXEC_RESULT"],
             value_dict["STD_OUT"],
             value_dict["STD_ERR"],
@@ -84,7 +85,7 @@ def update_job_history(value_dict):
     return result
 
 def get_job_history_latest(num_records):
-    query = "select h.ID, j.ID as JOB_ID, j.TITLE, h.HOST, h.IP_ADDRESS, h.EXEC_RESULT, h.START_DATETIME, h.END_DATETIME from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) where h.HOST = %s order by h.ID desc limit %s"
+    query = "select h.ID, h.JOB_KEY, j.ID as JOB_ID, j.TITLE, h.HOST, h.IP_ADDRESS, h.EXEC_RESULT, h.START_DATETIME, h.END_DATETIME from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) where h.HOST = %s order by h.ID desc limit %s"
     result = []
     def __inner_select_func(row):
         result.append(row)
@@ -109,30 +110,46 @@ def get_job_history_by_job_id(job_id):
         h.HOST, \
         h.IP_ADDRESS, \
         h.PID, \
+        h.RETURN_CODE, \
         h.EXEC_RESULT, \
         h.STD_OUT, \
         h.STD_ERR, \
         h.START_DATETIME, \
         h.END_DATETIME \
-        from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) where h.ID = %s"
+        from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) where h.ID = %s and j.HOST = %s"
     try:
-        job = mysql_utils.fetch_one(query, [job_id])
+        job = mysql_utils.fetch_one(query, [job_id, settings.HOST_NAME])
         return job
     except Exception as ex:
         logging.error(traceback.format_exc())
     return None
 
 def get_kill_target_jobs():
-    query = "select h.ID, h.JOB_KEY, j.ID as JOB_ID, j.TITLE \
+    query = "select h.ID, h.JOB_KEY, j.ID as JOB_ID, j.TITLE, h.PID \
             from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) \
             where h.EXEC_RESULT = 'running' and \
-            current_timestamp - h.START_DATETIME > j.MAX_EXEC_TIME * 60 and \
+            timestampdiff(SECOND, h.START_DATETIME, current_timestamp) > j.MAX_EXEC_TIME * 60 and \
             h.HOST = %s"
     result = []
     def __inner_select_func(row):
         result.append(row)
     try:
         mysql_utils.fetch_all(query, [settings.HOST_NAME], __inner_select_func)
+    except Exception as ex:
+        logging.error(traceback.format_exc())
+    return result
+
+def get_running_jobs_by_id(job_id):
+    query = "select h.ID, h.JOB_KEY, j.ID as JOB_ID, j.TITLE \
+            from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) \
+            where h.EXEC_RESULT = 'running' and \
+            h.JOB_ID = %s and \
+            h.HOST = %s"
+    result = []
+    def __inner_select_func(row):
+        result.append(row)
+    try:
+        mysql_utils.fetch_all(query, [job_id, settings.HOST_NAME], __inner_select_func)
     except Exception as ex:
         logging.error(traceback.format_exc())
     return result

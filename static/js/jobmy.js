@@ -67,7 +67,34 @@ jobmy.executeJob = function(jobId) {
       window.alert("error happend.");
     },
     complete: function() {
-      console.log("finish jobmy.putJob");
+      console.log("finish jobmy.executeJob");
+    }
+  });
+}
+
+jobmy.killJob = function(jobKey) {
+  let data = {
+    "job_key": jobKey
+  };
+  console.log(data);
+  $.ajax({
+    type: "POST",
+    url: "/job_kill",
+    data: data,
+    xhrFields: {
+      withCredentials: true
+    },
+    success: function(result, textStatus) {
+        let ret = eval(result);
+        window.alert(ret["msg"]);
+        window.location.reload();
+    },
+    error: function(xhr, textStatus, errorThrown) {
+      console.log(xhr);
+      window.alert("error happend.");
+    },
+    complete: function() {
+      console.log("finish jobmy.killJob");
     }
   });
 }

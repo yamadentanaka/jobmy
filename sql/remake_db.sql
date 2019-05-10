@@ -25,7 +25,8 @@ create table if not exists JOB_HISTORY (
   , HOST varchar(100)
   , IP_ADDRESS varchar(20)
   , PID int
-  , EXEC_RESULT varchar(50) -- running, succesed, failed, killed
+  , RETURN_CODE int
+  , EXEC_RESULT varchar(50) -- running, successed, failed, killed, skipped
   , STD_OUT longtext
   , STD_ERR longtext
   , START_DATETIME datetime

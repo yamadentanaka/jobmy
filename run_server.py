@@ -40,6 +40,7 @@ if __name__ == "__main__":
             (r'/healthcheck', HealthCheckHandler, dict()),
             (r'/job_edit', JobEditHandler, dict()),
             (r'/job_execute', ExecuteJobHandler, dict()),
+            (r'/job_kill', KillJobHandler, dict()),
             (r'/job_list', JobListHandler, dict()),
             (r'/job_history_detail', JobHistoryDetailHandler, dict()),
         ],  

@@ -11,6 +11,7 @@
     <th>Start Date Time</th>
     <th>End Date Time</th>
     <th>Execute</th>
+    <th>Kill</th>
   </tr>
   {% for job in jobs %}
   <tr>
@@ -21,6 +22,10 @@
     <td>{{ job["START_DATETIME"] }}</td>
     <td>{{ job["END_DATETIME"] }} </td>
     <td><a href="#" class="cp_btn" onClick="jobmy.executeJob({{ job['JOB_ID'] }});">Execute Same Job</a></td>
+    {% if job["EXEC_RESULT"] == "running" %}
+    <td><a href="#" class="cp_btn" onClick="jobmy.killJob('{{ job['JOB_KEY'] }}');">Kill Job</a></td>
+    {% else %}
+    {% end %}
   </tr>
   {% end %}
 </table>
