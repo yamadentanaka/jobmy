@@ -36,7 +36,8 @@ table.detail th {
   border:solid 1px #ddd;
   border-right:solid 1px #fff;
   border-left:solid 1px #fff;
-  background-color:#dddddd;
+  background-color:#dcd6d9;
+  color: #ffffff;
   /* width: 155px; */
 }
 
