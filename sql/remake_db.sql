@@ -21,6 +21,7 @@ create table if not exists JOB_HISTORY (
   ID int auto_increment
   , JOB_ID int not null
   , JOB_KEY varchar(72)
+  , COMMAND text
   , CALLER_JOB_KEY varchar(72)
   , HOST varchar(100)
   , IP_ADDRESS varchar(20)

@@ -47,12 +47,13 @@ def get_job_by_id(job_id):
 # JOB_HISTORY table functions
 def insert_job_history(value_dict):
     result = False
-    query = "insert into JOB_HISTORY (JOB_ID, JOB_KEY, CALLER_JOB_KEY, HOST, IP_ADDRESS, PID, EXEC_RESULT, STD_OUT, STD_ERR, START_DATETIME, END_DATETIME) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    query = "insert into JOB_HISTORY (JOB_ID, JOB_KEY, CALLER_JOB_KEY, COMMAND, HOST, IP_ADDRESS, PID, EXEC_RESULT, STD_OUT, STD_ERR, START_DATETIME, END_DATETIME) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
     try:
         mysql_utils.execute_query(query, [
             value_dict["JOB_ID"],
             value_dict["JOB_KEY"],
             value_dict["CALLER_JOB_KEY"] if "CALLER_JOB_KEY" in value_dict else None,
+            value_dict["COMMAND"],
             value_dict["HOST"],
             value_dict["IP_ADDRESS"],
             value_dict["PID"],
@@ -101,7 +102,7 @@ def get_job_history_by_job_id(job_id):
         j.ID as JOB_ID, \
         j.TITLE, \
         j.REMARKS, \
-        j.COMMAND, \
+        h.COMMAND, \
         j.SCHEDULE, \
         j.MAX_EXEC_TIME, \
         j.NEXT_JOB_IDS, \

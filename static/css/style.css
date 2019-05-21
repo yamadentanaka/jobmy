@@ -1,2 +1,66 @@
 @charset "UTF-8";
 @import url("base.css");
+
+input.job_title {
+  width: 500px;
+}
+
+textarea.remarks {
+  width: 50%;
+  height: 200px;
+}
+
+textarea.command {
+  width: 50%;
+  height: 200px;
+}
+
+input.schedule {
+  width: 500px;
+}
+
+table.detail {
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+  /* width: 490px; */
+}
+
+table.detail tr:last-child {
+  border-bottom:solid 1px #ddd;
+}
+
+table.detail th {
+  text-align: center;
+  padding: 7px 0;
+  border:solid 1px #ddd;
+  border-right:solid 1px #fff;
+  border-left:solid 1px #fff;
+  background-color:#dddddd;
+  /* width: 155px; */
+}
+
+table.detail td {
+  text-align: center;
+  padding: 7px 0;
+  border-right:solid 1px #ddd;
+  border-left:solid 1px #ddd;
+  /* width: 155px; */
+}
+
+table.detail td a {
+  background-color: #25b327;
+  color: white;
+  padding:5px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+}
+
+table.detail tr:hover {
+  background-color: rgb(255, 255, 255);
+  color: #888888;
+}
+
+pre {
+  text-align: left;
+}

@@ -54,6 +54,7 @@ def execute_job(job_id, caller_job_key=None):
         value_dict["IP_ADDRESS"] = ip
         value_dict["EXEC_RESULT"] = "running"
         value_dict["START_DATETIME"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        value_dict["COMMAND"] = job["COMMAND"]
         # execute job
         cmd = "{}".format(os.path.abspath(shell_file))
         result = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, preexec_fn=os.setsid)

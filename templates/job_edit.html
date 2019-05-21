@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Job Edit{% end %}
-{% block header %}Job Edit{% end %}
 {% block content %}
 {% if job_id  %}
 <input type="hidden" id="job_id" name="job_id" value="{{ job_id }}" />
 {% end %}
 {{ locals().get("job_id", "") }}
-Job Title:<br><input type="text" id="title" name="title" value="{{ escape(title) if title is not None else '' }}" /><br>
-Remarks:<br><textarea id="remarks" name="remarks">{{ escape(remarks) if remarks is not None else '' }}</textarea><br>
-Command:<br><textarea id="command" name="command">{{ command if command is not None else '' }}</textarea><br>
-Schedule(cron format or "Immediate")：<br><input type="text" id="schedule" name="schedule" value="{{ escape(schedule) if schedule is not None else '' }}" /><br>
+Job Title:<br><input type="text" class="job_title" id="title" name="title" value="{{ escape(title) if title is not None else '' }}" /><br>
+Remarks:<br><textarea class="remarks" id="remarks" name="remarks">{{ escape(remarks) if remarks is not None else '' }}</textarea><br>
+Command:<br><textarea class="command" id="command" name="command">{{ command if command is not None else '' }}</textarea><br>
+Schedule(cron format or "Immediate")：<br><input type="text" class="schedule" id="schedule" name="schedule" value="{{ escape(schedule) if schedule is not None else '' }}" /><br>
 Max Execution Time(minutes):<br><input type="number" id="max_exec_time" name="max_exec_time" value="{{ max_exec_time if max_exec_time is not None else ''}}"><br>
 Next Job IDs:<br><input type="text" id="next_job_ids" name="next_job_ids" value="{{ escape(next_job_ids) if next_job_ids is not None else ''}}"><br>
 <input type="button" value="登録" onClick="jobmy.putJob();" />
