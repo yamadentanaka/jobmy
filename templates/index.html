@@ -25,6 +25,7 @@
     {% if job["EXEC_RESULT"] == "running" %}
     <td><a href="#" class="cp_btn" onClick="jobmy.killJob('{{ job['JOB_KEY'] }}');">Kill Job</a></td>
     {% else %}
+    <td></td>
     {% end %}
   </tr>
   {% end %}
