@@ -1,4 +1,7 @@
 import os
+import json
+import requests
+import traceback
 import psutil
 import signal
 import shutil
@@ -64,6 +67,7 @@ def execute_job(job_id, caller_job_key=None):
             logging.warning("JOB KEY {} is failed to insert record.".format(key))
         JOBMY_JOB_INFO["JOBS"][key] = value_dict
         JOBMY_JOB_INFO["PROCESSES"][key] = result
+        send_slack("job[{}] key[{}] started.".format(job["TITLE"], key))
         result.wait()
         # update history table
         value_dict["RETURN_CODE"] = result.returncode
@@ -79,6 +83,7 @@ def execute_job(job_id, caller_job_key=None):
         value_dict["END_DATETIME"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if key in JOBMY_JOB_INFO["PROCESSES"]:
             finish_job(value_dict)
+        send_slack("job[{}] key[{}] is end.".format(job["TITLE"], key))
         # when job successed, tmp directory remove
         if result.returncode == 0:
             logging.info("remove dir {}".format(tmp_dir))
@@ -87,7 +92,8 @@ def execute_job(job_id, caller_job_key=None):
             if job["NEXT_JOB_IDS"] is not None:
                 ids = job["NEXT_JOB_IDS"].split(",")
                 for next_job_id in ids:
-                    kick_job(int(next_job_id), caller_job_key=key)
+                    if next_job_id != "":
+                        kick_job(int(next_job_id), caller_job_key=key)
     except Exception as ex:
         logging.error(traceback.format_exc())
     logging.info("end job: {}, key: {}".format(job_id, key))
@@ -158,3 +164,24 @@ def kick_schedule_jobs():
                 else:
                     logging.info("now kick job: {} {}".format(j["ID"], j["TITLE"]))
                     kick_job(j["ID"])
+
+def send_slack(message, user_name="jobmy_bot", icon_emoji=':robot_face:', channel=None):
+    try:
+        url = settings.SLACK_WEBHOOK_URL
+        if url == "":
+            return
+        if channel is None:
+            channel = settings.SLACK_SEND_CHANNEL
+        body = message
+        content = body
+
+        payload_dic = {
+            "text":content,
+            "username": user_name,
+            "icon_emoji": icon_emoji,
+            "channel": channel,
+        }
+        # Incoming Webhooksを使って対象のチャンネルにメッセージを送付
+        r = requests.post(url, data=json.dumps(payload_dic))
+    except Exception as ex:
+        logging.error(traceback.format_exc())
