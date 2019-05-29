@@ -1,5 +1,10 @@
 @charset "UTF-8";
 
+.header {
+  position: sticky;
+  top: 0;
+}
+
 /* menu style */
 .cp_navi {
   background-color: #ffffff;
