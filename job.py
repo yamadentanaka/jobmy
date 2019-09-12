@@ -15,8 +15,11 @@ from pathlib import Path
 import tornado.ioloop
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
-import jobmy_tables
 import settings
+if settings.DB_TYPE == "MySQL":
+    import jobmy_tables
+elif settings.DB_TYPE == "SQLite":
+    import jobmy_tables_sqlite as jobmy_tables
 from lib import cron_utils
 
 JOBMY_JOB_INFO = {

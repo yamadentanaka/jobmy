@@ -1,12 +1,19 @@
 import os
 import socket
 
+# DB_TYPE = "MySQL"
+DB_TYPE = "SQLite"
+
+# MySQL
 MYSQL_HOST = "localhost"
 MYSQL_PORT = 3306
 MYSQL_USER = ""
 MYSQL_PASSWORD = ""
 MYSQL_DB_NAME = "JOBMY"
 MYSQL_CHARSET = "utf8"
+
+# SQLite
+SQLITE_FILE_PATH = "./jobmy.sqlite3"
 
 WORK_DIR = "./tmp_jobmy"
 

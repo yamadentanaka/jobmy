@@ -3,10 +3,13 @@ import logging
 import traceback
 import json
 
-import jobmy_tables
+import settings
+if settings.DB_TYPE == "MySQL":
+    import jobmy_tables
+elif settings.DB_TYPE == "SQLite":
+    import jobmy_tables_sqlite as jobmy_tables
 import job
 from lib.string_utils import is_empty, is_int
-import settings
 
 class BaseJsonApiHandler(tornado.web.RequestHandler):
     def post(self):
