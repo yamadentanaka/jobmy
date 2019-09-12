@@ -74,7 +74,10 @@ def execute_job(job_id, caller_job_key=None):
         value_dict["COMMAND"] = job["COMMAND"]
         # execute job
         cmd = "{}".format(os.path.abspath(shell_file))
-        result = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, preexec_fn=os.setsid)
+        if platform.system() == "Windows":
+            result = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
+        else:
+            result = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, preexec_fn=os.setsid)
         value_dict["PID"] = result.pid
         ret = jobmy_tables.insert_job_history(value_dict)
         if not ret:
