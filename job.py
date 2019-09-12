@@ -1,4 +1,5 @@
 import os
+import platform
 import json
 import requests
 import traceback
@@ -41,11 +42,18 @@ def execute_job(job_id, caller_job_key=None):
         tmp_dir = os.path.join(settings.WORK_DIR, key)
         os.makedirs(tmp_dir)
         # create exec shell script
-        shell_file = os.path.join(tmp_dir, "jobmy.sh")
-        with open(shell_file, "w") as wfp:
-            wfp.write("#!/bin/bash\n\n")
-            wfp.write("cd `dirname $0`\n\n")
-            wfp.write(job["COMMAND"])
+        if platform.system() == "Windows":
+            shell_file = os.path.join(tmp_dir, "jobmy.bat")
+            with open(shell_file, "w") as wfp:
+                wfp.write("@echo off\n\n")
+                wfp.write("cd %~dp0\n\n")
+                wfp.write(job["COMMAND"])
+        else:
+            shell_file = os.path.join(tmp_dir, "jobmy.sh")
+            with open(shell_file, "w") as wfp:
+                wfp.write("#!/bin/bash\n\n")
+                wfp.write("cd `dirname $0`\n\n")
+                wfp.write(job["COMMAND"])
         p = Path(shell_file)
         p.chmod(0o764)
         # insert history table
@@ -56,7 +64,10 @@ def execute_job(job_id, caller_job_key=None):
             value_dict["CALLER_JOB_KEY"] = caller_job_key
         value_dict["HOST"] = settings.HOST_NAME
         host_name = socket.gethostname()
-        ip = socket.gethostbyname(host_name)
+        try:
+            ip = socket.gethostbyname(host_name)
+        except:
+            ip = ""
         value_dict["IP_ADDRESS"] = ip
         value_dict["EXEC_RESULT"] = "running"
         value_dict["START_DATETIME"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
