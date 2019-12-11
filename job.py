@@ -101,7 +101,7 @@ class Job:
             self.value_dict["END_DATETIME"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             # if it takes too long, job will maybe be killed.
             if self.key in JOBMY_JOB_INFO["PROCESSES"]:
-                self.finish_job(self.value_dict)
+                self.finish_job()
             send_slack("job[{}] key[{}] is end.".format(job["TITLE"], self.key))
             # when job successed, tmp directory remove
             if self.result.returncode == 0:
