@@ -5,7 +5,7 @@ create table if not exists JOBS (
   , REMARKS text
   , COMMAND text
   , SCHEDULE text
-  , MAX_EXEC_TIME integer
+  , MAX_EXEC_TIME integer default 0
   , NEXT_JOB_IDS text
   , HOST text
   , IS_DELETED integer default 0

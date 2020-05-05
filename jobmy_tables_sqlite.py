@@ -129,7 +129,8 @@ def get_kill_target_jobs():
     query = "select h.ID, h.JOB_KEY, j.ID as JOB_ID, j.TITLE, h.PID \
             from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) \
             where h.EXEC_RESULT = 'running' and \
-            strftime('%s', datetime('now', 'localtime')) - strftime('%s', h.START_DATETIME)> j.MAX_EXEC_TIME * 60 and \
+            j.MAX_EXEC_TIME > 0 and \
+            strftime('%s', datetime('now', 'localtime')) - strftime('%s', h.START_DATETIME) > j.MAX_EXEC_TIME * 60 and \
             h.HOST = ?"
     result = []
     def __inner_select_func(row):

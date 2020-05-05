@@ -1,6 +1,14 @@
 import os
 import socket
 
+WORK_DIR = "./tmp_jobmy"
+JOBMY_PORT = 8080
+HOST_NAME = os.environ.get("JOBMY_HOST_NAME", socket.gethostname())
+JOB_CHECK_PERIOD = 1000
+
+SLACK_WEBHOOK_URL = ""
+SLACK_SEND_CHANNEL = ""
+
 # DB_TYPE = "MySQL"
 DB_TYPE = "SQLite"
 
@@ -14,12 +22,3 @@ MYSQL_CHARSET = "utf8"
 
 # SQLite
 SQLITE_FILE_PATH = "./jobmy.sqlite3"
-
-WORK_DIR = "./tmp_jobmy"
-
-HOST_NAME = os.environ.get("JOBMY_HOST_NAME", socket.gethostname())
-
-JOB_CHECK_PERIOD = 3
-
-SLACK_WEBHOOK_URL = ""
-SLACK_SEND_CHANNEL = ""

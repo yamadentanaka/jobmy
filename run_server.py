@@ -16,9 +16,6 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s [%(filename)s(Line:%(lineno)d) [PID:%(process)d] [ThreadID:%(thread)d] %(message)s")
 
 def start_job_watcher():
-    period = jobmy_settings.JOB_CHECK_PERIOD 
-    ioloop = tornado.ioloop.IOLoop.current()
-    ioloop.add_timeout(time.time() + period, start_job_watcher)
     # kill the long time jobs
     job.kill_jobs()
     # kick scheduled jobs
@@ -36,20 +33,20 @@ if __name__ == "__main__":
         "static_url_prefix": "/assets/",
     }
     app = tornado.web.Application([
-            (r'/', TopHandler, dict()),
-            (r'/healthcheck', HealthCheckHandler, dict()),
-            (r'/job_edit', JobEditHandler, dict()),
-            (r'/job_execute', ExecuteJobHandler, dict()),
-            (r'/job_kill', KillJobHandler, dict()),
-            (r'/job_list', JobListHandler, dict()),
-            (r'/job_history_detail', JobHistoryDetailHandler, dict()),
+            (r'/', TopHandler, {}),
+            (r'/healthcheck', HealthCheckHandler, {}),
+            (r'/job_edit', JobEditHandler, {}),
+            (r'/job_execute', ExecuteJobHandler, {}),
+            (r'/job_kill', KillJobHandler, {}),
+            (r'/job_list', JobListHandler, {}),
+            (r'/job_history_detail', JobHistoryDetailHandler, {}),
         ],  
         **settings
     )   
     server = tornado.httpserver.HTTPServer(app)
-    server.bind(8080)
+    server.bind(jobmy_settings.JOBMY_PORT)
     server.start(1)  # Specify number of subprocesses
-    logging.debug("start jobmy web server.")
-    start_job_watcher()
     logging.debug("start jobmy job watcher.")
+    tornado.ioloop.PeriodicCallback(start_job_watcher, jobmy_settings.JOB_CHECK_PERIOD).start()
+    logging.debug("start jobmy web server.")
     tornado.ioloop.IOLoop.current().start()

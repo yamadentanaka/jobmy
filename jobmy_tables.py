@@ -129,6 +129,7 @@ def get_kill_target_jobs():
     query = "select h.ID, h.JOB_KEY, j.ID as JOB_ID, j.TITLE, h.PID \
             from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) \
             where h.EXEC_RESULT = 'running' and \
+            j.MAX_EXEC_TIME > 0 and \
             timestampdiff(SECOND, h.START_DATETIME, current_timestamp) > j.MAX_EXEC_TIME * 60 and \
             h.HOST = %s"
     result = []
