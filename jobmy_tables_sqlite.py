@@ -6,14 +6,11 @@ import settings
 # JOBS table functions
 def get_all_jobs():
     query = "select * from JOBS where HOST = ? order by ID"
-    result = []
-    def __inner_select_func(row):
-        result.append(row)
     try:
-        sqlite_utils.fetch_all(query, (settings.HOST_NAME,), __inner_select_func)
+        return sqlite_utils.fetch_all(query, (settings.HOST_NAME,))
     except Exception as ex:
         logging.error(traceback.format_exc())
-    return result
+        return []
 
 def insert_job(title, remarks, command, schedule, max_exec_time, next_job_ids, host_name):
     result = False
@@ -88,13 +85,11 @@ def update_job_history(value_dict):
 def get_job_history_latest(num_records):
     query = "select h.ID, h.JOB_KEY, j.ID as JOB_ID, j.TITLE, h.HOST, h.IP_ADDRESS, h.EXEC_RESULT, h.START_DATETIME, h.END_DATETIME from JOBS j inner join JOB_HISTORY h on (j.ID = h.JOB_ID) where h.HOST = ? order by h.ID desc limit ?"
     result = []
-    def __inner_select_func(row):
-        result.append(row)
     try:
-        sqlite_utils.fetch_all(query, (settings.HOST_NAME, num_records), __inner_select_func)
+        return sqlite_utils.fetch_all(query, (settings.HOST_NAME, num_records))
     except Exception as ex:
         logging.error(traceback.format_exc())
-    return result
+        return result
 
 def get_job_history_by_job_id(job_id):
     query = "select \
@@ -133,13 +128,11 @@ def get_kill_target_jobs():
             strftime('%s', datetime('now', 'localtime')) - strftime('%s', h.START_DATETIME) > j.MAX_EXEC_TIME * 60 and \
             h.HOST = ?"
     result = []
-    def __inner_select_func(row):
-        result.append(row)
     try:
-        sqlite_utils.fetch_all(query, (settings.HOST_NAME, ), __inner_select_func)
+        return sqlite_utils.fetch_all(query, (settings.HOST_NAME, ))
     except Exception as ex:
         logging.error(traceback.format_exc())
-    return result
+        return result
 
 def get_running_jobs_by_id(job_id):
     query = "select h.ID, h.JOB_KEY, j.ID as JOB_ID, j.TITLE \
@@ -148,10 +141,8 @@ def get_running_jobs_by_id(job_id):
             h.JOB_ID = ? and \
             h.HOST = ?"
     result = []
-    def __inner_select_func(row):
-        result.append(row)
     try:
-        sqlite_utils.fetch_all(query, (job_id, settings.HOST_NAME), __inner_select_func)
+        return sqlite_utils.fetch_all(query, (job_id, settings.HOST_NAME))
     except Exception as ex:
         logging.error(traceback.format_exc())
-    return result
+        return result

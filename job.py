@@ -163,11 +163,9 @@ def kill_job(job_key):
 
 def kill_jobs():
     targets = jobmy_tables.get_kill_target_jobs()
-    if len(targets) > 0:
-        logging.info("kill target jobs: {}".format(len(targets)))
-        for target in targets:
-            kill_job(target["JOB_KEY"])
-            logging.info("{} {} was killed.".format(target["JOB_KEY"], target["TITLE"]))
+    for target in targets:
+        kill_job(target["JOB_KEY"])
+        logging.info("{} {} was killed.".format(target["JOB_KEY"], target["TITLE"]))
 
 def kick_schedule_jobs():
     jobs = jobmy_tables.get_all_jobs()
