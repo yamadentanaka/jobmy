@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+import traceback
 import tornado.web
 import tornado.httpserver
 import tornado.ioloop
@@ -12,15 +13,18 @@ import job
 
 logging.basicConfig(
     stream=sys.stdout,
-    level=logging.DEBUG,
+    level=jobmy_settings.LOGGING_LEVEL,
     format="%(asctime)s %(levelname)s [%(filename)s(Line:%(lineno)d) [PID:%(process)d] [ThreadID:%(thread)d] %(message)s")
 
 def start_job_watcher():
-    # kill the long time jobs
-    job.kill_jobs()
-    # kick scheduled jobs
-    job.kick_schedule_jobs()
-    logging.debug("start_job_watcher")
+    try:
+        logging.debug("start_job_watcher")
+        # kill the long time jobs
+        job.kill_jobs()
+        # kick scheduled jobs
+        job.kick_schedule_jobs()
+    except Exception as ex:
+        logging.error(traceback.format_exc())
 
 if __name__ == "__main__":
     logging.debug("start jobmy server.")

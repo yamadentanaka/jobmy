@@ -1,5 +1,8 @@
 import os
 import socket
+import logging
+
+LOGGING_LEVEL = logging.DEBUG
 
 WORK_DIR = "./tmp_jobmy"
 JOBMY_PORT = 8080

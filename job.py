@@ -22,10 +22,12 @@ elif settings.DB_TYPE == "SQLite":
 from lib import cron_utils
 from lib.network_utils import send_slack
 
+
 JOBMY_JOB_INFO = {
     "JOBS": {},
     "PROCESSES": {}
 }
+
 
 class Job:
     def __init__(self, job_id, caller_job_key=None):
@@ -126,20 +128,14 @@ class Job:
         if self.key in JOBMY_JOB_INFO["PROCESSES"]:
             JOBMY_JOB_INFO["PROCESSES"].pop(self.key)
 
+
 def kick_job(job_id, caller_job_key=None):
     job = Job(job_id, caller_job_key=caller_job_key)
     executor = ThreadPoolExecutor(max_workers=1)
     executor.submit(job.execute_job)
 
+
 def kill_job(job_key):
-    error_value_dict = {
-        "RETURN_CODE": -9,
-        "EXEC_RESULT": "killed",
-        "STD_OUT": None,
-        "STD_ERR": None,
-        "END_DATETIME": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "JOB_KEY": job_key
-    }
     if job_key in JOBMY_JOB_INFO["PROCESSES"]:
         # JOBMY_JOB_INFO["PROCESSES"][job_key].kill()
         process_id = JOBMY_JOB_INFO["JOBS"][job_key]["PID"]
@@ -156,10 +152,9 @@ def kill_job(job_key):
             logging.info("killed PID: {}, KEY: {}".format(JOBMY_JOB_INFO["JOBS"][job_key]["PID"], job_key))
         else:
             logging.warning("kill target job is not existed. {}".format(job_key))
-            jobmy_tables.update_job_history(error_value_dict)
     else:
         logging.warning("kill target job is not existed. {}".format(job_key))
-        jobmy_tables.update_job_history(error_value_dict)
+
 
 def kill_jobs():
     targets = jobmy_tables.get_kill_target_jobs()
