@@ -131,8 +131,8 @@ class Job:
 
 def kick_job(job_id, caller_job_key=None):
     job = Job(job_id, caller_job_key=caller_job_key)
-    executor = ThreadPoolExecutor(max_workers=1)
-    executor.submit(job.execute_job)
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        executor.submit(job.execute_job)
 
 
 def kill_job(job_key):
